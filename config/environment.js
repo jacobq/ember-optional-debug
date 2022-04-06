@@ -1,5 +1,9 @@
 'use strict';
 
 module.exports = function (/* environment, appConfig */) {
-  return {};
+  return {
+    'ember-optional-debug': {
+      logProvider: 'debug',
+    },
+  };
 };

@@ -1,6 +1,6 @@
 {
   "name": "ember-optional-debug",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
     "ember-addon"
@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "ember-cli-babel": "^7.26.11",
-    "ember-cli-htmlbars": "^6.0.1"
+    "ember-cli-htmlbars": "^6.0.1",
+    "ember-get-config": "^1.0.4"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
@@ -52,6 +53,7 @@
     "ember-source": "~4.2.0",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^4.2.0",
+    "ember-truth-helpers": "^3.0.0",
     "ember-try": "^2.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.4.0",
@@ -62,9 +64,15 @@
     "loader.js": "^4.7.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.5.1",
+    "quibble": "^0.6.8",
     "qunit": "^2.18.0",
     "qunit-dom": "^2.0.0",
+    "testdouble": "^3.16.4",
+    "testdouble-qunit": "^3.0.3",
     "webpack": "^5.69.1"
+  },
+  "optionalDependencies": {
+    "debug": "^4.3.4"
   },
   "engines": {
     "node": "12.* || 14.* || >= 16"

@@ -5,6 +5,11 @@ import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
 import { start } from 'ember-qunit';
 
+// See https://github.com/alexlafroscia/testdouble-qunit/
+import td from 'testdouble';
+import installVerifyAssertion from 'testdouble-qunit';
+installVerifyAssertion(QUnit, td);
+
 setApplication(Application.create(config.APP));
 
 setup(QUnit.assert);

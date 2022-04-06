@@ -1,7 +1,14 @@
 ember-optional-debug
 ==============================================================================
 
-[Short description of the addon.]
+Provides a convenience factory utility for
+[`https://github.com/debug-js/debug`](https://github.com/debug-js/debug)
+(formerly maintained by [visionmedia](https://github.com/visionmedia)) that:
+
+* Generates `log`, `logVerbose`, and `warn` functions based on a given namespace/scope.
+* Specifies [`debug`](https://www.npmjs.com/package/debug) as a
+  [`peerDependency`](https://nodejs.org/en/blog/npm/peer-dependencies/) so that the consuming
+  application or addon can specify which version should be used (hopefully preventing version conflicts).
 
 
 Compatibility
@@ -23,8 +30,36 @@ ember install ember-optional-debug
 Usage
 ------------------------------------------------------------------------------
 
-[Longer description of how to use the addon in apps.]
+```js
+// environment.js
+'use strict';
 
+module.exports = function (environment) {
+  let ENV = {
+    modulePrefix: 'my-thing',
+    environment,
+    // ...
+    'ember-optional-debug': {
+      //logProvider: 'none', // log = () => undefined
+      //logProvider: 'console', // log = console.log.bind(console)
+      logProvider: 'debug', // log = debug(yourNamespace)
+    },
+    // ...
+  };
+  // ...
+  return ENV;
+};
+```
+
+```js
+//import { getLoggingFunctions } from `ember-optional-debug`;
+import { getLoggingFunctions } from "ember-optional-debug/utils/log";
+
+const { log, logVerbose, warn } = getLoggingFunctions(`my-namespace:foo`);
+log('hello'); // [console.log] my-namespace:foo hello
+logVerbose('world'); // [console.log] my-namespace:foo:verbose world
+warn('boom'); // [console.warn] my-namespace:foo boom
+```
 
 Contributing
 ------------------------------------------------------------------------------

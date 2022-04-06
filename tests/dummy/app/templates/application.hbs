@@ -1,5 +1,35 @@
 {{page-title "Dummy"}}
 
-<h2 id="title">Welcome to Ember</h2>
+<h2 id="title">ember-optional-debug</h2>
+<pre>
+// Addon config
+
+{{this.addonConfig}}
+</pre>
+
+<style>
+  label, select {
+    font-size: 20px;
+  }
+  button {
+    font-size: 20px;
+    margin: 8px 12px 0 0;
+    padding: 8px;
+  }
+</style>
+
+<label for="logProviderSelect">logProvider</label>
+<select
+  id="logProviderSelect"
+  {{on "change" this.changeMode}}
+>
+  {{#each this.logProviderOptions as |opt|}}
+    <option selected={{eq this.mode opt}}>{{opt}}</option>
+  {{/each}}
+</select>
+<br>
+<button type="button" {{on "click" this.log}}>log</button>
+<button type="button" {{on "click" this.logVerbose}}>logVerbose</button>
+<button type="button" {{on "click" this.warn}}>warn</button>
 
 {{outlet}}
