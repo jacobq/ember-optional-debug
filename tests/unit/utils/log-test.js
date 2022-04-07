@@ -1,11 +1,9 @@
 import { getLoggingFunctions } from 'ember-optional-debug/utils/log';
-import { hooks, module, test } from 'qunit';
+import { module, test } from 'qunit';
 import * as td from 'testdouble';
 
-module('Unit | Utility | log', function () {
-  hooks.beforeEach(function () {
-
-  });
+module('Unit | Utility | log', function (hooks) {
+  //hooks.beforeEach(function () {});
   hooks.afterEach(function () {
     td.reset();
   });
