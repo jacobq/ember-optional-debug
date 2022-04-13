@@ -11,6 +11,7 @@ module.exports = function (defaults) {
           global: true,
         },
       },
+      exclude: ['vitest'],
     },
   });
 

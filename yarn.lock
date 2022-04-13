@@ -7925,6 +7925,13 @@ node-watch@0.7.3:
   resolved "https://registry.yarnpkg.com/node-watch/-/node-watch-0.7.3.tgz#6d4db88e39c8d09d3ea61d6568d80e5975abc7ab"
   integrity sha512-3l4E8uMPY1HdMMryPRUAl+oIHtXtyiTlIiESNSVSNxcPfzAFzeTbXFQkZfAwBbo0B1qMSG8nUABx+Gd+YrbKrQ==
 
+node-window-polyfill@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/node-window-polyfill/-/node-window-polyfill-1.0.2.tgz#5c589323764fa37be6464ef2aac99f166dfc7c00"
+  integrity sha512-v/kxszOE9vr1JRObFPmZg0j57b84SG+fNueuyjpKmNKSVDtcYJuWgExyLUxI10JYLx6hNXH1FR9WInAUvItXgw==
+  dependencies:
+    ws "^7.4.3"
+
 nopt@^3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
@@ -10894,6 +10901,11 @@ wide-align@^1.1.0:
   dependencies:
     string-width "^1.0.2 || 2 || 3 || 4"
 
+window-shim@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/window-shim/-/window-shim-1.0.0.tgz#c720507bb41bc8c2a7da95444720f1478f22f681"
+  integrity sha1-xyBQe7QbyMKn2pVERyDxR48i9oE=
+
 word-wrap@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
@@ -10953,6 +10965,11 @@ write-file-atomic@^3.0.0:
     is-typedarray "^1.0.0"
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
+
+ws@^7.4.3:
+  version "7.5.7"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.7.tgz#9e0ac77ee50af70d58326ecff7e85eb3fa375e67"
+  integrity sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==
 
 ws@~8.2.3:
   version "8.2.3"
