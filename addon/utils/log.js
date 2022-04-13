@@ -1,12 +1,16 @@
+import mConsole from 'ember-optional-debug/utils/mockable-console';
 import config from 'ember-get-config';
-//import debug from 'debug'; // too bad we can't do this and still allow debug to be optional :'(
+// too bad we can't just import debug like this and still allow it to be optional :'(
+//import debug from 'debug';
+
+const defaultOptions = {
+  logProvider: 'debug',
+};
 
 export function getLoggingFunctions(logNamespace, configOverride) {
   const debugConfig = configOverride
     ? configOverride
-    : config?.['ember-optional-debug'] || {
-        logProvider: 'debug',
-      };
+    : config?.['ember-optional-debug'] || defaultOptions;
   const { logProvider } = debugConfig;
   switch (logProvider) {
     default:
@@ -32,13 +36,13 @@ function getNoOpLoggingFunctions() {
 function getConsoleLoggingFunctions(logNamespace) {
   return {
     log(...args) {
-      return console.log(logNamespace, ...args);
+      return mConsole.log(logNamespace, ...args);
     },
     logVerbose(...args) {
-      return console.log(`${logNamespace}:verbose`, ...args);
+      return mConsole.log(`${logNamespace}:verbose`, ...args);
     },
     warn(...args) {
-      return console.warn(logNamespace, ...args);
+      return mConsole.warn(logNamespace, ...args);
     },
   };
 }
@@ -63,7 +67,7 @@ try {
               ? debug(`${namespace}:verbose`)
               : debug(namespace);
           if (type === 'warn') {
-            logger.log = console.warn.bind(console); // eslint-disable-line no-console
+            logger.log = mConsole.warn.bind(mConsole);
           }
           loggers[namespace] = loggers[namespace] || {};
           loggers[namespace][type] = logger;
@@ -96,7 +100,7 @@ function debugFunctions(logNamespace) {
     logVerbose: debug(`${logNamespace}:verbose`),
     warn: debug(logNamespace),
   };
-  functions.warn.log = console.warn.bind(console); // eslint-disable-line no-console
+  functions.warn.log = mConsole.warn.bind(mConsole);
   return functions;
 }
 

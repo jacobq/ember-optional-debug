@@ -28,7 +28,9 @@
   "dependencies": {
     "ember-cli-babel": "^7.26.11",
     "ember-cli-htmlbars": "^6.0.1",
-    "ember-get-config": "^1.0.4"
+    "ember-get-config": "^1.0.4",
+    "testdouble": "^3.16.4",
+    "testdouble-qunit": "^3.0.3"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
@@ -67,8 +69,6 @@
     "quibble": "^0.6.8",
     "qunit": "^2.18.0",
     "qunit-dom": "^2.0.0",
-    "testdouble": "^3.16.4",
-    "testdouble-qunit": "^3.0.3",
     "webpack": "^5.69.1"
   },
   "optionalDependencies": {
