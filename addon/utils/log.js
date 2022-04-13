@@ -1,3 +1,4 @@
+//
 import mConsole from 'ember-optional-debug/utils/mockable-console';
 import config from 'ember-get-config';
 // too bad we can't just import debug like this and still allow it to be optional :'(

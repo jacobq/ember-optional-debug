@@ -1,12 +1,15 @@
 import { getLoggingFunctions } from 'ember-optional-debug/utils/log';
 import { module, test } from 'qunit';
+import { only } from 'qunit';
+//import debug from 'debug';
 import * as td from 'testdouble';
 
 module('Unit | Utility | log', function (hooks) {
-  let cLog, cWarn;
+  let cLog, cWarn, debug;
   hooks.beforeEach(function () {
     cLog = td.replace(console, 'log');
     cWarn = td.replace(console, 'warn');
+    debug = td.replace('debug');
   });
   hooks.afterEach(function () {
     td.reset();
@@ -19,14 +22,10 @@ module('Unit | Utility | log', function (hooks) {
   test('it throws when invalid config option passed', function (assert) {
     assert.expect(2);
     const badOptions = {
-      logProvider: 'unsupported-option',
+      logProvider: 'not one of the actual choices',
     };
     let exception;
     try {
-      //const { log, logVerbose, warn } = getLoggingFunctions('throw-me', badOptions);
-      //log('This should never run');
-      //logVerbose('This should never run');
-      //warn('This should never run');
       getLoggingFunctions('throw-me', badOptions);
       assert.fail('Execution should not have reached this point');
     } catch (e) {
@@ -40,7 +39,17 @@ module('Unit | Utility | log', function (hooks) {
     }
   });
 
-  test('it can log through console', async function (assert) {
+  test('it can log/warn through console', async function (assert) {
+    const { log, warn } = getLoggingFunctions('my-namespace:foo');
+    log('testing testing', 123);
+    assert.verify(cLog('my-namespace:foo', 'testing testing', 123));
+
+    const e = Error('This error is only for testing purposes');
+    warn(e);
+    assert.verify(cWarn('my-namespace:foo', e));
+  });
+
+  only('it can log/warn through debug', async function (assert) {
     //const stub = td.function();
     //const debugMock =
     //await td.replaceEsm('debug', {
@@ -51,9 +60,10 @@ module('Unit | Utility | log', function (hooks) {
     //    };
     //  },
     //});
-    const { log } = getLoggingFunctions('my-namespace:foo');
-    log('testing testing', 123);
-    assert.verify(cLog('my-namespace:foo', 'testing Xtesting', 123));
+    const { log } = getLoggingFunctions('foo:debug', { logProvider: 'debug' });
+    log('send this to debug', 123);
+    assert.verify(cLog('my-namespace:foo', 'testing testing', 123));
     console.log(cWarn); // DUMMY
   });
+
 });
