@@ -1,15 +1,14 @@
 import { getLoggingFunctions } from 'ember-optional-debug/utils/log';
 import { module, test } from 'qunit';
-import { only } from 'qunit';
+//import { only } from 'qunit';
 //import debug from 'debug';
 import * as td from 'testdouble';
 
 module('Unit | Utility | log', function (hooks) {
-  let cLog, cWarn, debug;
+  let cLog, cWarn;
   hooks.beforeEach(function () {
     cLog = td.replace(console, 'log');
     cWarn = td.replace(console, 'warn');
-    debug = td.replace('debug');
   });
   hooks.afterEach(function () {
     td.reset();
@@ -48,22 +47,4 @@ module('Unit | Utility | log', function (hooks) {
     warn(e);
     assert.verify(cWarn('my-namespace:foo', e));
   });
-
-  only('it can log/warn through debug', async function (assert) {
-    //const stub = td.function();
-    //const debugMock =
-    //await td.replaceEsm('debug', {
-    //  default(namespace) {
-    //    return function (...args) {
-    //      stub(namespace, ...args);
-    //      //console.log(`MOCKED ${namespace}`, ...args);
-    //    };
-    //  },
-    //});
-    const { log } = getLoggingFunctions('foo:debug', { logProvider: 'debug' });
-    log('send this to debug', 123);
-    assert.verify(cLog('my-namespace:foo', 'testing testing', 123));
-    console.log(cWarn); // DUMMY
-  });
-
 });

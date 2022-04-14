@@ -2,7 +2,8 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  test: { //vitest options here
+  test: {
+    include: ['**/*.{vitest}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     testTimeout: 10_000,
     globalSetup: 'tests/vitest-setup.js',
   },

@@ -7,4 +7,8 @@ describe('getLoggingFunctions', () => {
   it('getLoggingFunctions export exists', () => {
     expect(typeof getLoggingFunctions).toEqual('function');
   });
+
+  //it('logs through debug module', async () => {
+  //  throw Error('Test not implemented');
+  //});
 });

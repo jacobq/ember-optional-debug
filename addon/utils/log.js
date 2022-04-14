@@ -1,4 +1,3 @@
-//
 import mConsole from 'ember-optional-debug/utils/mockable-console';
 import config from 'ember-get-config';
 // too bad we can't just import debug like this and still allow it to be optional :'(
@@ -53,36 +52,39 @@ const queue = []; // entry => [Date.now(), 'log'|'logVerbose'|'warn', namespace,
 
 let didFailToLoadDebug = false;
 let debug = null;
-try {
-  import('debug')
-    .then((mod) => {
-      debug = mod.default;
-      // Now that we have loaded the debug library we can flush out the queued messages
-      const loggers = {};
-      for (const item of queue) {
-        const [time, type, namespace, args] = item;
-        let logger = loggers[namespace]?.[type];
-        if (!logger) {
-          logger =
-            type === 'logVerbose'
-              ? debug(`${namespace}:verbose`)
-              : debug(namespace);
-          if (type === 'warn') {
-            logger.log = mConsole.warn.bind(mConsole);
+async function loadDebugModule() {
+  try {
+    await import('debug')
+      .then((mod) => {
+        debug = mod.default;
+        // Now that we have loaded the debug library we can flush out the queued messages
+        const loggers = {};
+        for (const item of queue) {
+          const [time, type, namespace, args] = item;
+          let logger = loggers[namespace]?.[type];
+          if (!logger) {
+            logger =
+              type === 'logVerbose'
+                ? debug(`${namespace}:verbose`)
+                : debug(namespace);
+            if (type === 'warn') {
+              logger.log = mConsole.warn.bind(mConsole);
+            }
+            loggers[namespace] = loggers[namespace] || {};
+            loggers[namespace][type] = logger;
           }
-          loggers[namespace] = loggers[namespace] || {};
-          loggers[namespace][type] = logger;
+          logger(`[${time}]`, ...args);
         }
-        logger(`[${time}]`, ...args);
-      }
-      queue.length = 0;
-    })
-    .catch(() => {
-      didFailToLoadDebug = true;
-    });
-} catch {
-  didFailToLoadDebug = true;
+        queue.length = 0;
+      })
+      .catch(() => {
+        didFailToLoadDebug = true;
+      });
+  } catch {
+    didFailToLoadDebug = true;
+  }
 }
+loadDebugModule();
 
 function getDebugLoggingFunctions(logNamespace) {
   if (didFailToLoadDebug) {

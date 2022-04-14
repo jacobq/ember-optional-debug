@@ -1,51 +1,49 @@
+const path = require('path');
+const { existsSync, readFileSync, writeFileSync } = require('fs');
+
 // We need to load the `ember build` stuff to get modules resolvable
+const distPath = path.join(__dirname, '..', 'dist');
+if (!existsSync(distPath)) {
+  throw Error(`dist folder (${distPath}) not found\nYou probably need to run 'ember build'`);
+}
 
 // Since we're running in node and not in a browser we need to do a little tweaking
-require('node-window-polyfill').register(); // sets up globalThis.window
-globalThis.self = globalThis.window;
+// to make things "work"
+const { JSDOM } = require('jsdom');
+const { window } = new JSDOM(readFileSync(path.join(distPath, 'index.html')));
+globalThis.document = window.document;
+globalThis.self = window;
+globalThis.window = window;
 
-// vendor.js is supposed to define a global `define`, but it's left in a
-// "global" that goes out of scope when require finishes :/
-//require('../dist/assets/vendor.js');
-//console.log(`globalObj.define -->`, globalThis.define); // undefined
-//require('../dist/assets/dummy.js'); // ReferenceError: define is not defined
-// So instead we do a little hack here and append a line to save it on globalThis at the end:
+// vendor.js is supposed to define a "global" `define`, but it's left in a
+// top-level variable that goes out of scope when require finishes :/
+// So instead we do a little hack here and concatenate the scripts that would
+// normally run (in the same scope) when the browser loads the page.
+// Also, from here on we rename node's "require" function as "requireNode"
+// to avoid accidentally calling it when we would be calling Ember/requirejs' require.
+globalThis.requireNode = require;
+delete globalThis.require;
 
-//import { readFileSync, writeFileSync } from 'fs'; // Doesn't work because we're outside a module
-const { readFileSync, writeFileSync } = require('fs');
-const distPath = `${__dirname}/../dist`;
 const setupScript = `${distPath}/vitest-prep.js`;
-writeFileSync(setupScript, [
-  readFileSync(`${distPath}/assets/vendor.js`, 'utf-8'),
-  readFileSync(`${distPath}/assets/dummy.js`, 'utf-8'),
-  //readFileSync(`${distPath}/assets/test-support.js`, 'utf-8'),
-].join('\r\n')); // sadly this obviously breaks source mapping...
+const dataToConcatenate = [
+  readFileSync(path.join(distPath, 'assets', 'vendor.js'), 'utf-8'),
+  `
+console.log('Finished vendor.js');
+// Save scoped require on global object
+//globalThis.requireAMD = require;
+globalThis.require = require;
+  `,
+  //readFileSync(path.join(distPath, 'assets', 'chunk.app.69a1b79d38ce9cadea7d.js'), 'utf-8'), // FIXME: fingerprint
+  //`console.log('Finished chunk.app.js');\n`,
+  readFileSync(path.join(distPath, 'assets', 'test-support.js'), 'utf-8'),
+  `console.log('Finished test-support.js');\n`,
+  readFileSync(path.join(distPath, 'assets', 'dummy.js'), 'utf-8'),
+  `console.log('Finished dummy.js');\n`,
+];
+console.log(`Concatenating scripts into ${setupScript}`);
+writeFileSync(
+  setupScript,
+  dataToConcatenate.join('\r\n')
+); // (I suspect this will break source mapping)
 
-// Taken from https://github.com/adopted-ember-addons/ember-electron/blob/main/vendor/wrap-require.js
-((win) => {
-  const { requireNode, require: requireAMD } = win;
-
-  // Redefine a global `require` function that can satisfy both Node and AMD module systems.
-  if (requireAMD) {
-    win.require = (...args) => {
-      try {
-        return requireAMD(...args);
-      } catch(error) {
-        if (error.toString().includes('Error: Could not find module')) {
-          return requireNode(...args);
-        }
-
-        console.error(error); // eslint-disable-line no-console
-      }
-    };
-
-    // Both Ember's and Node's require() have some properties (e.g. Ember's has
-    // require.has() and Node's has require.resolve()). Fortunately there are no
-    // naming conflicts, so we can expose them all.
-    Object.assign(win.require, requireNode, requireAMD);
-  } else {
-    win.require = requireNode;
-  }
-})(globalThis.window);
-
-require(setupScript); // Error: Could not find module `@ember/application` imported from `dummy/app`
+requireNode(setupScript);
